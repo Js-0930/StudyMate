@@ -1,18 +1,18 @@
 const STORE="studymate_v12";
 const subjects=["수학","국어","영어","물리","화학","탐구","기타"];
 const motivations=[
-"오늘의 작은 집중이<br><strong>내일의 실력을 만듭니다.</strong>",
-"완벽하게 하려고 하지 말고<br><strong>일단 시작해보세요.</strong>",
-"지금 쌓는 1시간이<br><strong>미래의 나를 바꿉니다.</strong>",
-"조금 느려도 괜찮아요.<br><strong>멈추지만 않으면 됩니다.</strong>",
-"남과 비교하지 말고<br><strong>어제의 나를 넘어보세요.</strong>",
-"해야 할 일을 미루는 시간보다<br><strong>끝내는 시간이 더 짧습니다.</strong>",
-"오늘 공부한 만큼<br><strong>내일의 선택지가 늘어납니다.</strong>",
-"집중할 수 있는 지금,<br><strong>딱 10분만 먼저 시작해요.</strong>",
-"결과는 한 번에 오지 않지만<br><strong>매일의 기록은 쌓입니다.</strong>",
-"힘든 날에도 앉아 있는 것,<br><strong>그것도 실력입니다.</strong>",
-"오늘의 목표는 거창하지 않아도 돼요.<br><strong>하나씩 끝내면 됩니다.</strong>",
-"공부는 재능보다<br><strong>꾸준함이 오래 갑니다.</strong>"
+["오늘의 작은 집중이<br><strong>내일의 실력을 만듭니다.</strong>","천 리 길도 한 걸음부터.","— 고전 격언"],
+["완벽하게 하려고 하지 말고<br><strong>일단 시작해보세요.</strong>","두려워도 앞으로 나아가라.","— 제천대성의 기개"],
+["지금 쌓는 1시간이<br><strong>미래의 나를 바꿉니다.</strong>","오늘의 땀은 내일의 힘이 된다.","— 제천대성의 기개"],
+["조금 느려도 괜찮아요.<br><strong>멈추지만 않으면 됩니다.</strong>","넘어졌다면 다시 일어나 앞으로 가라.","— 제천대성의 기개"],
+["남과 비교하지 말고<br><strong>어제의 나를 넘어보세요.</strong>","남을 이기는 것보다 자신을 이기는 것이 어렵다.","— 고전 격언"],
+["해야 할 일을 미루지 마세요.<br><strong>지금 한 번 더 해보세요.</strong>","강한 자는 포기하지 않는다.","— 제천대성의 기개"],
+["오늘 공부한 만큼<br><strong>내일의 선택지가 늘어납니다.</strong>","실력은 하루아침에 생기지 않는다.","— 고전 격언"],
+["집중할 수 있는 지금,<br><strong>딱 10분만 먼저 시작해요.</strong>","첫걸음을 내딛는 순간 길이 열린다.","— 제천대성의 기개"],
+["결과를 걱정하지 말고<br><strong>지금 할 일에 집중하세요.</strong>","끝까지 버티는 자가 결국 웃는다.","— 제천대성의 기개"],
+["힘든 날에도 앉아 있는 것,<br><strong>그것도 실력입니다.</strong>","오늘 견딘 한계가 내일의 실력이 된다.","— 제천대성의 기개"],
+["오늘의 목표는 하나씩.<br><strong>끝까지 해내면 됩니다.</strong>","포기하지 않는 마음이 가장 강한 무기다.","— 제천대성의 기개"],
+["공부는 재능보다<br><strong>꾸준함이 오래 갑니다.</strong>","천 번의 연습보다 중요한 것은 오늘의 한 번이다.","— 고전 격언"]
 ];
 let state=JSON.parse(localStorage.getItem(STORE)||"null");
 if(!state){
@@ -24,7 +24,7 @@ state.plans=state.plans.map(p=>({...p,date:p.date||new Date().toISOString().slic
 let running=false,startAt=0,currentSubject=null,interval=null,currentFilter="all";
 
 const $=id=>document.getElementById(id);
-const todayKey=()=>new Date().toISOString().slice(0,10);
+const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
 function save(){localStorage.setItem(STORE,JSON.stringify(state))}
 function safe(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 function secToday(){return state.sessions.filter(x=>x.date===todayKey()).reduce((a,x)=>a+x.seconds,0)}
@@ -35,7 +35,12 @@ function localDateLabel(){return new Date().toLocaleDateString("ko-KR",{month:"l
 function motivation(){
  const start=new Date(new Date().getFullYear(),0,0);
  const day=Math.floor((new Date()-start)/864e5);
- $("motivation").innerHTML=motivations[day%motivations.length];
+ const item=motivations[day%motivations.length];
+ $("motivation").innerHTML=`<div class="motivation-main">${item[0]}</div>
+ <div class="motivation-quote">
+   <div class="motivation-quote-text">“${item[1]}”</div>
+   <div class="motivation-quote-author">${item[2]}</div>
+ </div>`;
 }
 function renderDday(){
  const d=state.dday;
@@ -98,7 +103,7 @@ function stopTimer(show=true){
  save();render();if(show)toast(`${ended} ${fmtMin(seconds)} 기록 완료!`);
 }
 $("timerBtn").onclick=()=>running?stopTimer():toast("오른쪽 과목별 START 버튼에서 과목을 선택해주세요.");
-$("timerReset").onclick=()=>{if(running){clearInterval(interval);running=false;currentSubject=null}$("timer").textContent="00:00:00";$("timerSubject").textContent="과목을 선택해 공부하세요";$("timerBtn").textContent="공부 시작";renderSubjects();toast("타이머를 리셋했어요. 기록은 저장되지 않습니다.")};
+$("timerReset").onclick=()=>{if(running){clearInterval(interval);interval=null;running=false;currentSubject=null}$("timer").textContent="00:00:00";$("timerSubject").textContent="과목을 선택해 공부하세요";$("timerBtn").textContent="공부 시작";renderSubjects();toast("타이머를 리셋했어요. 기록은 저장되지 않습니다.")};
 $("addBtn").onclick=()=>{$("planForm").classList.toggle("hidden");if(!$("planForm").classList.contains("hidden"))$("task").focus()};
 $("savePlan").onclick=()=>{
  const task=$("task").value.trim(),minutes=Number($("minutes").value);
