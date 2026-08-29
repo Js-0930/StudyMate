@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#5b63f6">
+<meta name="description" content="StudyMate - 학생을 위한 공부 계획과 집중시간 관리">
+<title>StudyMate v1.0</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+<header class="topbar">
+  <a class="brand" href="#" aria-label="StudyMate 홈"><span>Study</span>Mate</a>
+  <div class="top-actions"><button id="themeBtn" class="icon-btn" title="테마 변경">☾</button></div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow">TODAY • <span id="dateText"></span></p>
+    <h1>오늘도 한 걸음씩<br><strong>공부를 쌓아보세요.</strong></h1>
+    <p class="sub">계획하고, 집중하고, 기록하세요.</p>
+  </div>
+  <div class="focus-card">
+    <div class="focus-label">FOCUS TIMER</div>
+    <div id="timer" class="timer">00:00:00</div>
+    <div class="timer-controls">
+      <button id="timerBtn" class="primary">공부 시작</button>
+      <button id="timerReset" class="secondary">리셋</button>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <article class="stat"><span>오늘 공부시간</span><b id="todayTime">0분</b><small id="todayDelta">목표를 세워보세요</small></article>
+  <article class="stat"><span>계획 달성률</span><b id="rate">0%</b><small><span id="doneCount">0</span> / <span id="totalCount">0</span> 완료</small></article>
+  <article class="stat"><span>이번 주 공부시간</span><b id="weekTime">0분</b><small>꾸준함이 가장 중요해요</small></article>
+</section>
+
+<div class="layout">
+<section class="panel plans-panel">
+  <div class="panel-head"><div><p class="section-kicker">MY PLAN</p><h2>오늘의 공부 계획</h2></div><button id="addBtn" class="primary small">＋ 계획 추가</button></div>
+  <div id="planForm" class="plan-form hidden">
+    <label>과목<select id="subject"><option>수학</option><option>국어</option><option>영어</option><option>물리</option><option>화학</option><option>탐구</option><option>기타</option></select></label>
+    <label class="wide">공부 내용<input id="task" maxlength="80" placeholder="예: 대수 개념 정리"></label>
+    <label>목표(분)<input id="minutes" type="number" min="1" max="1440" placeholder="60"></label>
+    <button id="savePlan" class="primary">추가</button>
+  </div>
+  <div class="filters">
+    <button data-filter="all" class="filter active">전체</button><button data-filter="todo" class="filter">진행 중</button><button data-filter="done" class="filter">완료</button>
+  </div>
+  <div id="plans"></div>
+</section>
+
+<aside class="panel">
+  <div class="panel-head"><div><p class="section-kicker">ANALYTICS</p><h2>과목별 기록</h2></div></div>
+  <div id="subjectStats" class="subject-stats"></div>
+  <div class="weekly"><div class="mini-head"><span>최근 7일</span><span id="bestDay"></span></div><div id="weekBars" class="week-bars"></div></div>
+</aside>
+</div>
+</main>
+
+<footer>StudyMate v1.0 · 데이터는 이 기기의 브라우저에 저장됩니다.</footer>
+<div id="toast" class="toast" role="status"></div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
